@@ -16,7 +16,7 @@ constexpr int PLAY_BUTTON = 12;
 constexpr int MENU_BUTTON = 13;
 constexpr int MIDDLE_BUTTON = 15;
 
-constexpr int LED_PIN = 16;
+constexpr int LED_PIN = 19;
 constexpr uint8_t LED_OFF = LOW;
 constexpr uint8_t LED_ON = HIGH;
 
@@ -39,6 +39,9 @@ bool isValid(const char *ssid, esp_bd_addr_t address, int rssi)
 {
   // Serial.print("available SSID: ");
   // Serial.println(ssid);
+  Serial.print("============== Found new device: ");
+  Serial.print(ssid);
+  Serial.println("==============");
   bool result = pairing;
   return result;
 }
@@ -95,7 +98,7 @@ void setup()
 void loop()
 {
   // handle state of transmitter
-  if(a2dp_source.is_connected())
+  if(a2dp_source.is_connected() && btTransmitterState != PAIRING)
   {
     // device is connected
     connection_timeout = 0;
@@ -114,14 +117,14 @@ void loop()
         // pairing ended, try to reconnect
         pairing = false;
         btTransmitterState = UNCONNECTED;
-        a2dp_source.set_auto_reconnect(true);
+        //a2dp_source.set_auto_reconnect(true);
       }
     }
     else // invalid state or unconnected
     {
       btTransmitterState = UNCONNECTED;
 
-      a2dp_source.set_auto_reconnect(true);
+      //a2dp_source.set_auto_reconnect(true);
 
       connection_timeout++;
 
